@@ -2,7 +2,7 @@ name: GitHub Actions PR
 on:
   pull_request:
     types:
-      - opened
+      - [opened, reopened]
     branches:
       - qa
 jobs:
