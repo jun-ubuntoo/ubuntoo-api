@@ -1,0 +1,13 @@
+type Spotlight {
+  image: String!
+  title: String!
+  contentType: String!
+  body: String!
+  url: String!
+}
+
+
+type Query {
+  spotlight(id: String): Spotlight
+  allSpotlights: [Spotlight]
+}
