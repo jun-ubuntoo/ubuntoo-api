@@ -1,52 +1,57 @@
 package com.ubuntoo.graphql;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.ubuntoo.pojo.Spotlight;
+import com.ubuntoo.pojo.ActivityFeedItem;
 
 import graphql.kickstart.tools.GraphQLQueryResolver;
 
 @Component
-public class GraphQLResolver implements GraphQLQueryResolver {
-	static List<Spotlight> spotlights = new ArrayList<Spotlight>();
+public class ActivityFeedGraphQLResolver implements GraphQLQueryResolver {
 	static {
-		spotlights.add(new Spotlight(
+		System.out.println(" ***************** ActivityFeedGraphQLResolver");
+	}
+	static List<ActivityFeedItem> feedItems = new ArrayList<ActivityFeedItem>();
+	static {
+		feedItems.add(new ActivityFeedItem(
 				"https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-				"Plastic Promises", 
-				"Blog", 
+				"Fashion United", 
 				"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex  quis nostrud exercitation ullamco laboris nisi ut aliquip ex. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex  quis nostrud exercitation ullamco laboris nisi ut aliquip ex", 
-				"/spotlight/1"));
-		spotlights.add(new Spotlight(
+				"/activity/1", (new Date()).getTime()));
+		feedItems.add(new ActivityFeedItem(
 				"https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-				"Plastic Promises", 
-				"Blog 2", 
+				"Fashion United", 
 				"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex  quis nostrud exercitation ullamco laboris nisi ut aliquip ex. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex  quis nostrud exercitation ullamco laboris nisi ut aliquip ex", 
-				"/spotlight/2"));
-		spotlights.add(new Spotlight(
+				"/activity/2", (new Date()).getTime()));
+		feedItems.add(new ActivityFeedItem(
 				"https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-				"Plastic Promises", 
-				"Blog 3", 
+				"Fashion United", 
 				"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex  quis nostrud exercitation ullamco laboris nisi ut aliquip ex. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex  quis nostrud exercitation ullamco laboris nisi ut aliquip ex", 
-				"/spotlight/3"));
-		spotlights.add(new Spotlight(
+				"/activity/3", (new Date()).getTime()));
+		feedItems.add(new ActivityFeedItem(
 				"https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-				"Plastic Promises", 
-				"Blog 4", 
+				"Fashion United ", 
 				"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex  quis nostrud exercitation ullamco laboris nisi ut aliquip ex. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex  quis nostrud exercitation ullamco laboris nisi ut aliquip ex", 
-				"/spotlight/4"));
+				"/activity/4", (new Date()).getTime()));
+		feedItems.add(new ActivityFeedItem(
+				"https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+				"Fashion United", 
+				"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex  quis nostrud exercitation ullamco laboris nisi ut aliquip ex. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex  quis nostrud exercitation ullamco laboris nisi ut aliquip ex", 
+				"/activity/5", (new Date()).getTime()));
 	}
 
-	public Spotlight spotlight(String url) {
-		for (Spotlight s : spotlights) {
+	public ActivityFeedItem activityFeedItem(String url) {
+		for (ActivityFeedItem s : feedItems) {
 			if (s.getUrl().equals(url)) return s;
 		}
 		return null;
 	}
 
-	public List<Spotlight> allSpotlights() {
-		return spotlights;
+	public List<ActivityFeedItem> allActivityFeedItems() {
+		return feedItems;
 	}
 }

@@ -1,18 +1,18 @@
 package com.ubuntoo.pojo;
 
-public class Spotlight {
+public class ActivityFeedItem {
 	private String image;
 	private String title;
-	private String contentType;
 	private String body;
 	private String url;
+	private long date;
 
-	public Spotlight(String image, String title, String contentType, String body, String url) {
+	public ActivityFeedItem(String image, String title, String body, String url, long date) {
 		this.image = image;
 		this.title = title;
-		this.contentType = contentType;
 		this.body = body;
 		this.url = url;
+		this.date = date;
 	}
 
 	public String getImage() {
@@ -31,14 +31,6 @@ public class Spotlight {
 		this.title = title;
 	}
 
-	public String getContentType() {
-		return contentType;
-	}
-
-	public void setContentType(String contentType) {
-		this.contentType = contentType;
-	}
-
 	public String getBody() {
 		return body;
 	}
@@ -55,13 +47,20 @@ public class Spotlight {
 		this.url = url;
 	}
 
+	public long getDate() {
+		return date;
+	}
+
+	public void setDate(long date) {
+		this.date = date;
+	}
 
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 
-		Spotlight spotlight = (Spotlight) o;
+		ActivityFeedItem spotlight = (ActivityFeedItem) o;
 
 		return url.equals(spotlight.url);
 	}

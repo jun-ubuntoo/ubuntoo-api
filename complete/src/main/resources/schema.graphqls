@@ -6,8 +6,39 @@ type Spotlight {
   url: String!
 }
 
+type ActivityFeedItem {
+  image: String!
+  title: String!
+  body: String!
+  url: String!
+  date: String!
+}
+
+type HomeBandItem {
+  category: String!
+  image: String!
+  title: String!
+  subtitle: String!
+  body: String!
+  url: String!
+  date: String!
+}
+
+type HomeBandCategory {
+  category: String!
+  title: String!
+  url: String!
+  items: [HomeBandItem]!
+}
+
 
 type Query {
+  activityFeedItem(id: String): ActivityFeedItem
+  allActivityFeedItems: [ActivityFeedItem]
+  
   spotlight(id: String): Spotlight
   allSpotlights: [Spotlight]
+  
+  homeBandCategories: [HomeBandCategory]
+  homeBandCategory(category: String): HomeBandCategory
 }

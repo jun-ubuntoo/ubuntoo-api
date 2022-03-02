@@ -4,6 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 @EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
 @SpringBootApplication(scanBasePackages={"com.ubuntoo.graphql", "com.ubuntoo.api", "com.example.restservice"}) //, "com.ubuntoo.graphql"
@@ -16,18 +20,31 @@ public class RestServiceApplication {
         SpringApplication.run(RestServiceApplication.class, args);
     }
 
-/*
-	@Bean
-	public ServletRegistrationBean servletRegistrationBean() {
-
-		GraphQLSchema schema  = SchemaParser.newParser()
-				.resolvers(authorResolver(ar), mutation(br, ar), query(br, ar))
-				.file("graphql/author.graphqls")
-				.file("graphql/book.graphqls")
-				.build().makeExecutableSchema();
-		ExecutionStrategy executionStrategy = new AsyncExecutionStrategy();
-		GraphQLServlet servlet = new SimpleGraphQLServlet(schema, executionStrategy);
-		ServletRegistrationBean bean = new ServletRegistrationBean(servlet, "/graphql");
-		return bean;
-	}*/
+    @Bean
+    public CorsFilter corsFilter() {
+        System.out.println("************* RestServiceApplication.corsConfigurer");
+      final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+      final CorsConfiguration config = new CorsConfiguration();
+      config.setAllowCredentials(true);
+      config.addAllowedOrigin("http://localhost:3000");
+      config.addAllowedHeader("*");
+      config.addAllowedMethod("*");
+      source.registerCorsConfiguration("/graphql/**", config);
+      return new CorsFilter(source);
+    }
+    
+    /*@Bean
+    public WebMvcConfigurer corsConfigurerX() {
+        System.out.println("************* RestServiceApplication.corsConfigurer");
+    	
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(final CorsRegistry registry) {
+                registry.addMapping("/graphql")
+                        .allowedOrigins(CorsConfiguration.ALL)
+                        .allowedHeaders(CorsConfiguration.ALL)
+                        .allowedMethods(CorsConfiguration.ALL);
+            }
+        };
+    }*/
 }

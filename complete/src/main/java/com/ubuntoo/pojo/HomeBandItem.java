@@ -1,18 +1,22 @@
 package com.ubuntoo.pojo;
 
-public class Spotlight {
+public class HomeBandItem {
+	private String category;
 	private String image;
 	private String title;
-	private String contentType;
+	private String subtitle;
 	private String body;
 	private String url;
+	private long date;
 
-	public Spotlight(String image, String title, String contentType, String body, String url) {
+	public HomeBandItem(String category, String image, String title, String subtitle, String body, String url, long date) {
+		this.category = category;
 		this.image = image;
 		this.title = title;
-		this.contentType = contentType;
+		this.subtitle = subtitle;
 		this.body = body;
 		this.url = url;
+		this.date = date;
 	}
 
 	public String getImage() {
@@ -31,14 +35,6 @@ public class Spotlight {
 		this.title = title;
 	}
 
-	public String getContentType() {
-		return contentType;
-	}
-
-	public void setContentType(String contentType) {
-		this.contentType = contentType;
-	}
-
 	public String getBody() {
 		return body;
 	}
@@ -55,13 +51,36 @@ public class Spotlight {
 		this.url = url;
 	}
 
+	public long getDate() {
+		return date;
+	}
+
+	public void setDate(long date) {
+		this.date = date;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
+	public String getSubtitle() {
+		return subtitle;
+	}
+
+	public void setSubtitle(String subtitle) {
+		this.subtitle = subtitle;
+	}
 
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 
-		Spotlight spotlight = (Spotlight) o;
+		HomeBandItem spotlight = (HomeBandItem) o;
 
 		return url.equals(spotlight.url);
 	}
