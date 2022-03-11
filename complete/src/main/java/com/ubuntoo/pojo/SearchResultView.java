@@ -1,15 +1,22 @@
 package com.ubuntoo.pojo;
 
-public class HomeBandItem {
+public class SearchResultView {
+	private String id;
 	private String category;
 	private String image;
 	private String title;
 	private String subtitle;
 	private String body;
 	private String url;
-	private long date;
+	private Long date;
+	private double score;
 
-	public HomeBandItem(String category, String image, String title, String subtitle, String body, String url, long date) {
+	public SearchResultView() {
+		super();
+	}
+
+	public SearchResultView(String id, String category, String image, String title, String subtitle, String body, String url, Long date, double score) {
+		this.id = id;
 		this.category = category;
 		this.image = image;
 		this.title = title;
@@ -17,6 +24,15 @@ public class HomeBandItem {
 		this.body = body;
 		this.url = url;
 		this.date = date;
+		this.score = score;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public String getImage() {
@@ -51,11 +67,11 @@ public class HomeBandItem {
 		this.url = url;
 	}
 
-	public long getDate() {
+	public Long getDate() {
 		return date;
 	}
 
-	public void setDate(long date) {
+	public void setDate(Long date) {
 		this.date = date;
 	}
 
@@ -75,14 +91,22 @@ public class HomeBandItem {
 		this.subtitle = subtitle;
 	}
 
+	public double getScore() {
+		return score;
+	}
+
+	public void setScore(double score) {
+		this.score = score;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 
-		HomeBandItem spotlight = (HomeBandItem) o;
+		SearchResultView other = (SearchResultView) o;
 
-		return url.equals(spotlight.url);
+		return url.equals(other.url);
 	}
 
 	@Override

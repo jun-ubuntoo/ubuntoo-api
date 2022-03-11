@@ -14,22 +14,43 @@ type ActivityFeedItem {
   date: String!
 }
 
-type HomeBandItem {
+type SearchResultView {
   category: String!
   image: String!
   title: String!
-  subtitle: String!
+  subtitle: String
   body: String!
   url: String!
-  date: String!
+  date: String
 }
 
 type HomeBandCategory {
   category: String!
   title: String!
   url: String!
-  items: [HomeBandItem]!
+  items: [SearchResultView]!
 }
+
+type SearchFilter {
+  title: String!
+  type: String!
+  hint: String
+  field: String!
+}
+
+type SearchCriteriaFilterValues {
+  name: String!
+  values: [String]!
+}
+
+type SearchCriteria {
+  category: String!
+  searchText: String
+  sort: String
+  aggregates: String
+  filters: [SearchCriteriaFilterValues]!
+}
+
 
 
 type Query {
@@ -41,4 +62,8 @@ type Query {
   
   homeBandCategories: [HomeBandCategory]
   homeBandCategory(category: String): HomeBandCategory
+  
+  searchFilters(jsonCriteria: String): [SearchFilter]
+  
+  search(criteria: String) : [SearchResultView]
 }

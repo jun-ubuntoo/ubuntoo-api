@@ -7,7 +7,7 @@ public class HomeBandCategory {
 	private String category;
 	private String title;
 	private String url;
-	private List<HomeBandItem> items = new ArrayList<HomeBandItem>();
+	private List<SearchResultView> items = new ArrayList<SearchResultView>();
 
 	public HomeBandCategory(String category, String title, String url) {
 		this.category = category;
@@ -51,13 +51,13 @@ public class HomeBandCategory {
 
 
 
-	public List<HomeBandItem> getItems() {
+	public List<SearchResultView> getItems() {
 		return items;
 	}
 
 
 
-	public void setItems(List<HomeBandItem> items) {
+	public void setItems(List<SearchResultView> items) {
 		this.items = items;
 	}
 

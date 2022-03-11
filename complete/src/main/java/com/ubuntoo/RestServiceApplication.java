@@ -4,10 +4,15 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
+
+import com.ubuntoo.mappers.EventsResultsMapper;
+import com.ubuntoo.mappers.GreenhousesResultsMapper;
+import com.ubuntoo.mappers.KnowledgeResultsMapper;
+import com.ubuntoo.mappers.NewsResultsMapper;
+import com.ubuntoo.mappers.SearchResultMappers;
+import com.ubuntoo.mappers.SolutionsResultsMapper;
+import com.ubuntoo.pojo.SearchCategory;
+import com.ubuntoo.staticdata.SearchCategories;
 
 @EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
 @SpringBootApplication(scanBasePackages={"com.ubuntoo.graphql", "com.ubuntoo.api", "com.example.restservice"}) //, "com.ubuntoo.graphql"
@@ -16,35 +21,19 @@ public class RestServiceApplication {
         System.out.println("************* RestServiceApplication");
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) {		
+    	SearchCategories.getInstance().add(new SearchCategory("solutions", "Newest Solutions", "/solutions", "/solutions_production/_search", "solution_status", "active"));
+    	SearchCategories.getInstance().add(new SearchCategory("knowledge", "Trending Knowledge", "/blogs", "/blogs_production/_search", "status", "active"));
+    	SearchCategories.getInstance().add(new SearchCategory("news", "Latest News", "/solutions", "/news_items_production/_search", "status", "active"));
+    	SearchCategories.getInstance().add(new SearchCategory("events", null, null, "/conferences_production/_search", "status", "active"));
+    	SearchCategories.getInstance().add(new SearchCategory("greenhouses", null, null, "/greenhouses_production/_search", "greenhouse_status", "active"));
+
+    	SearchResultMappers.getInstance().add("solutions", new SolutionsResultsMapper());
+    	SearchResultMappers.getInstance().add("knowledge", new KnowledgeResultsMapper());
+    	SearchResultMappers.getInstance().add("news", new NewsResultsMapper());
+    	SearchResultMappers.getInstance().add("events", new EventsResultsMapper());
+    	SearchResultMappers.getInstance().add("greenhouses", new GreenhousesResultsMapper());
+    	
         SpringApplication.run(RestServiceApplication.class, args);
     }
-
-    @Bean
-    public CorsFilter corsFilter() {
-        System.out.println("************* RestServiceApplication.corsConfigurer");
-      final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-      final CorsConfiguration config = new CorsConfiguration();
-      config.setAllowCredentials(true);
-      config.addAllowedOrigin("http://localhost:3000");
-      config.addAllowedHeader("*");
-      config.addAllowedMethod("*");
-      source.registerCorsConfiguration("/graphql/**", config);
-      return new CorsFilter(source);
-    }
-    
-    /*@Bean
-    public WebMvcConfigurer corsConfigurerX() {
-        System.out.println("************* RestServiceApplication.corsConfigurer");
-    	
-        return new WebMvcConfigurer() {
-            @Override
-            public void addCorsMappings(final CorsRegistry registry) {
-                registry.addMapping("/graphql")
-                        .allowedOrigins(CorsConfiguration.ALL)
-                        .allowedHeaders(CorsConfiguration.ALL)
-                        .allowedMethods(CorsConfiguration.ALL);
-            }
-        };
-    }*/
 }
