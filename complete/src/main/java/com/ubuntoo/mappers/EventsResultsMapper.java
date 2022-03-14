@@ -20,18 +20,12 @@ public class EventsResultsMapper implements SearchResultMapper {
 		view.setScore(score);
 		view.setCategory("events");
 		view.setImage("https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500");
-		view.setTitle(WordUtils.capitalize(json.getString("title")));
+		view.setTitle(WordUtils.capitalize(json.getString("name")));
 		
-		if (json.has("authors")) {
-			JSONArray values = json.getJSONArray("authors");
-			if (values.length()>0) {
-				String value = values.getString(0);
-				if (StringUtils.isNotBlank(value)) {
-					view.setSubtitle(WordUtils.capitalize(value));
-				}
-			}
+		if (json.has("title")) {
+			//view.setSubtitle(WordUtils.capitalize(json.getString("title")));
 		}
-		view.setBody(WordUtils.capitalize(json.getString("summary")));
+		view.setBody(WordUtils.capitalize(json.getString("title")));
 		view.setUrl("/k/="+id);
 		
 		if (json.has("date")) {

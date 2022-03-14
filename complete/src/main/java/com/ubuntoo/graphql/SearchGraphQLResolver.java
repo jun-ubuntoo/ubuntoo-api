@@ -26,9 +26,7 @@ import graphql.schema.DataFetchingEnvironment;
 
 @Component
 public class SearchGraphQLResolver implements GraphQLQueryResolver {
-	static final boolean SHOW_ALL = true;
-	static final String PART_OF_FIELD = "part_of";
-	static final String PART_OF_BOTH = "both";
+	static final boolean SHOW_ALL = false;
 	static final String STATUS_FIELD_FIND = "status";
 	static final String GH_FIELD = "greenhouses";
 	
@@ -37,8 +35,6 @@ public class SearchGraphQLResolver implements GraphQLQueryResolver {
 	static final String EVENTS_CAT = "events";
 	static final String SOLUTIONS_CAT = "solutions";
 	static final String GREENHOUSES_CAT = "greenhouses";
-	
-	static final String[] SEARCH_FIELDS =  new String[]{"name.analyzed", "short_bio.analyzed", "about.analyzed", "keyword_tags.analyzed"};
 
 	public List<SearchFilter> searchFilters(String category, DataFetchingEnvironment env) throws Exception {
 		List<SearchFilter> filters = new ArrayList<SearchFilter>();
@@ -59,30 +55,70 @@ public class SearchGraphQLResolver implements GraphQLQueryResolver {
 			filterItems.put(filterItem);
 		}
 
-		if (!SHOW_ALL && greenhouse<=0) {
+		if (!SHOW_ALL && greenhouse<=0 && cat.getElasticSearchPartofField()!=null) {
 			filterItem = new JSONObject();
-			filterItem.put("name", PART_OF_FIELD);
+			filterItem.put("name", cat.getElasticSearchPartofField());
 			filterItem.put("values", new JSONArray());
-			filterItem.getJSONArray("values").put(PART_OF_BOTH);
+			filterItem.getJSONArray("values").put(cat.getElasticSearchPartofFieldBoth());
 			filterItems.put(filterItem);
 		} 
 		
 		if (StringUtils.equals(category, SOLUTIONS_CAT)) {
 			filters.add(new SearchFilter("search", "Search by Location", "Location", "location", null));
-			filters.add(new SearchFilter("checkbox", "", "Status", cat.getElasticSearchStatusField(), null));
-			filters.add(new SearchFilter("checkbox", "", "Part of", PART_OF_FIELD, null));
+			
+			if (SHOW_ALL) {
+				filters.add(new SearchFilter("checkbox", "", "Status", cat.getElasticSearchStatusField(), null));
+				
+				if (cat.getElasticSearchPartofField()!=null) {
+					filters.add(new SearchFilter("checkbox", "", "Part of", cat.getElasticSearchPartofField(), null));
+				}
+			}
+			
 			filters.add(new SearchFilter("checkbox", "", "Organization Type", "organization_type", null));
 			filters.add(new SearchFilter("checkbox", "", "Stage of Development", "stage_of_development", null));
 			filters.add(new SearchFilter("checkbox", "", "Value Chain Impact", "value_chain_impacts", null));
 			filters.add(new SearchFilter("checkbox", "", "Seeking", "seekings", null));
 		} else if (StringUtils.equals(category, KNOWLEDGE_CAT)) {
+			if (SHOW_ALL) {
 				filters.add(new SearchFilter("checkbox", "", "Status", cat.getElasticSearchStatusField(), null));
-				filters.add(new SearchFilter("checkbox", "", "Part of", PART_OF_FIELD, null));
-				filters.add(new SearchFilter("checkbox", "", "Subject", "subjects", null));
-				filters.add(new SearchFilter("checkbox", "", "Format", "formats", null));
-				filters.add(new SearchFilter("checkbox", "", "Category", "categories", null));
-				filters.add(new SearchFilter("checkbox", "", "Industry", "topics", null));
+				if (cat.getElasticSearchPartofField()!=null) {
+					filters.add(new SearchFilter("checkbox", "", "Part of", cat.getElasticSearchPartofField(), null));
+				}
 			}
+			
+			filters.add(new SearchFilter("checkbox", "", "Subject", "subjects", null));
+			filters.add(new SearchFilter("checkbox", "", "Format", "formats", null));
+			filters.add(new SearchFilter("checkbox", "", "Category", "categories", null));
+			filters.add(new SearchFilter("checkbox", "", "Industry", "topics", null));
+		} else if (StringUtils.equals(category, NEWS_CAT)) {
+			filters.add(new SearchFilter("search", "Search by Location", "Location", "location", null));
+			if (SHOW_ALL) {
+				filters.add(new SearchFilter("checkbox", "", "Status", cat.getElasticSearchStatusField(), null));
+				if (cat.getElasticSearchPartofField()!=null) {
+					filters.add(new SearchFilter("checkbox", "", "Part of", cat.getElasticSearchPartofField(), null));
+				}
+			}
+			
+			filters.add(new SearchFilter("checkbox", "", "Industry", "topics", null));
+		} else if (StringUtils.equals(category, EVENTS_CAT)) {
+			filters.add(new SearchFilter("search", "Search by Location", "Location", "location", null));
+			if (SHOW_ALL) {
+				filters.add(new SearchFilter("checkbox", "", "Status", cat.getElasticSearchStatusField(), null));
+				if (cat.getElasticSearchPartofField()!=null) {
+					filters.add(new SearchFilter("checkbox", "", "Part of", cat.getElasticSearchPartofField(), null));
+				}
+			}
+			
+			filters.add(new SearchFilter("search", "Filter by Industry", "Subject", "subject", null));
+			filters.add(new SearchFilter("checkbox", "", "Industry", "topics", null));
+		} else if (StringUtils.equals(category, GREENHOUSES_CAT)) {
+			if (SHOW_ALL) {
+				filters.add(new SearchFilter("checkbox", "", "Status", cat.getElasticSearchStatusField(), null));
+			}
+			//filters.add(new SearchFilter("checkbox", "", "Type", "topics", null));
+			//filters.add(new SearchFilter("checkbox", "", "Industry", "topics", null));
+			filters.add(new SearchFilter("checkbox", "", "Access", "membership_type", null));
+		}
 		
 		if (filters.size()>0) {
 			String aggs = "";
@@ -93,7 +129,7 @@ public class SearchGraphQLResolver implements GraphQLQueryResolver {
 				}
 			}
 			if (aggs.length()>0) {
-				JSONObject query = ElasticSearchHelper.getInstance().generateQuery(greenhouse, "", SEARCH_FIELDS, filterItems, "", aggs, 0, 0);
+				JSONObject query = ElasticSearchHelper.getInstance().generateQuery(greenhouse, "", cat.getSearchTextFields(), filterItems, "", aggs, 0, 0);
 				JSONObject result = ElasticSearchHelper.getInstance().execute(cat.getElasticSearchUrl(), query.toString());
 				int totalCount = result.getJSONObject("hits").getJSONObject("total").getInt("value");
 				JSONObject aggregations = result.getJSONObject("aggregations");
@@ -104,7 +140,11 @@ public class SearchGraphQLResolver implements GraphQLQueryResolver {
 						JSONArray buckets = aggregations.getJSONObject(filter.getField()).getJSONArray("buckets");
 						for (int i=0; i<buckets.length(); i++) {
 							JSONObject bucket = buckets.getJSONObject(i);
-							filter.getItems().add(new SearchFilterValue(bucket.getString("key"), bucket.getString("key"), bucket.getInt("doc_count")));
+							
+							String key = bucket.getString("key");
+							if (StringUtils.isNotBlank(key)) {
+								filter.getItems().add(new SearchFilterValue(key, key, bucket.getInt("doc_count")));
+							}
 						}
 					}
 				}
@@ -129,7 +169,7 @@ public class SearchGraphQLResolver implements GraphQLQueryResolver {
 		if (StringUtils.isBlank(criteria.getCategory()) || cat==null || mapper==null) {
 			throw new Exception("Invalid search category");
 		}
-		System.out.println(criteria.toString());
+		//System.out.println(criteria.toString());
 		
 		JSONArray filterItems = new JSONArray();
 		for (SearchCriteriaFilterValues filterValues : criteria.getFilters()) {
@@ -154,18 +194,18 @@ public class SearchGraphQLResolver implements GraphQLQueryResolver {
 			filterItems.put(filterItem);
 		}
 
-		if (!SHOW_ALL && greenhouse<=0) {
+		if (!SHOW_ALL && greenhouse<=0 && cat.getElasticSearchPartofField()!=null) {
 			filterItem = new JSONObject();
-			filterItem.put("name", PART_OF_FIELD);
+			filterItem.put("name", cat.getElasticSearchPartofField());
 			filterItem.put("values", new JSONArray());
-			filterItem.getJSONArray("values").put(PART_OF_BOTH);
+			filterItem.getJSONArray("values").put(cat.getElasticSearchPartofFieldBoth());
 			filterItems.put(filterItem);
 		} 
 		
 		JSONObject query = ElasticSearchHelper.getInstance().generateQuery(
 				greenhouse, 
 				criteria.getSearchText(), 
-				SEARCH_FIELDS,
+				cat.getSearchTextFields(),
 				filterItems, 
 				criteria.getSort(), 
 				criteria.getAggregates(), 

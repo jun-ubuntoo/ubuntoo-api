@@ -115,6 +115,7 @@ public class ElasticSearchHelper {
 		JSONObject q = new JSONObject();
 		q.put("from", from);
 		q.put("size", size);
+		q.put("track_total_hits", true);
 		
 		/* if greenhouse>0 then let's ensure there is a 'greenhouse' filterItem
 		 * if one exists already, override the value

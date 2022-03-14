@@ -19,10 +19,14 @@ public class SolutionsResultsMapper implements SearchResultMapper {
 		view.setId(id);
 		view.setScore(score);
 		view.setCategory("solutions");
-		view.setImage("https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500");
+		if (json.has("company_image") && !json.isNull("company_image")) {
+			view.setImage(json.getString("company_image"));
+		} else {
+			view.setImage("https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500");
+		}
 		view.setTitle(WordUtils.capitalize(json.getString("name")));
 		
-		if (json.has("company_name")) {
+		if (json.has("company_name") ) {
 			String value = json.getString("company_name");
 			if (StringUtils.isNotBlank(value)) {
 				view.setSubtitle("by "+WordUtils.capitalize(value));

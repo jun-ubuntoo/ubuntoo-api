@@ -9,9 +9,13 @@ public class SearchCategory {
 	private String elasticSearchUrl;
 	private String elasticSearchStatusField;
 	private String elasticSearchStatusActive = "active";
+	private String elasticSearchPartofField;
+	private String elasticSearchPartofFieldBoth = "both";
+	private String[] searchTextFields = new String[]{};
 	
 	public SearchCategory(String name, String homebandTitle, String viewAllUrl, String elasticSearchUrl,
-			String elasticSearchStatusField, String elasticSearchStatusActive) {
+			String elasticSearchStatusField, String elasticSearchStatusActive, String[] searchTextFields,
+			String elasticSearchPartofField, String elasticSearchPartofFieldBoth) {
 		super();
 		this.name = name;
 		this.homebandTitle = homebandTitle;
@@ -19,6 +23,9 @@ public class SearchCategory {
 		this.elasticSearchUrl = elasticSearchUrl;
 		this.elasticSearchStatusField = elasticSearchStatusField;
 		this.elasticSearchStatusActive = elasticSearchStatusActive;
+		this.searchTextFields = searchTextFields;
+		this.elasticSearchPartofField = elasticSearchPartofField;
+		this.elasticSearchPartofFieldBoth = elasticSearchPartofFieldBoth;
 	}
 	
 	public boolean isHomeband() {
@@ -71,6 +78,30 @@ public class SearchCategory {
 
 	public void setElasticSearchStatusActive(String elasticSearchStatusActive) {
 		this.elasticSearchStatusActive = elasticSearchStatusActive;
+	}
+
+	public String[] getSearchTextFields() {
+		return searchTextFields;
+	}
+
+	public void setSearchTextFields(String[] searchTextFields) {
+		this.searchTextFields = searchTextFields;
+	}
+
+	public String getElasticSearchPartofField() {
+		return elasticSearchPartofField;
+	}
+
+	public void setElasticSearchPartofField(String elasticSearchPartofField) {
+		this.elasticSearchPartofField = elasticSearchPartofField;
+	}
+
+	public String getElasticSearchPartofFieldBoth() {
+		return elasticSearchPartofFieldBoth;
+	}
+
+	public void setElasticSearchPartofFieldBoth(String elasticSearchPartofFieldBoth) {
+		this.elasticSearchPartofFieldBoth = elasticSearchPartofFieldBoth;
 	}
 	
 	
