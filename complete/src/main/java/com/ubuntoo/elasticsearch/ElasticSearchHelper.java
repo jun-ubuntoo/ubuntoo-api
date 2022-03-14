@@ -36,7 +36,7 @@ public class ElasticSearchHelper {
 	private ElasticSearchHelper() {
 		esHost = System.getProperty(ES_HOST_PROPERTY, ES_HOST_DEFAULT);
 
-		RestClientBuilder builder = RestClient.builder(new HttpHost("vpc-prod-ubuntoo-rc-es-j3qcwcqyeknljkbnc24vuiaiyy.us-east-1.es.amazonaws.com", 443, "https"));
+		RestClientBuilder builder = RestClient.builder(new HttpHost("vpc-prod-ubuntoo-sandbox-es-edjutwgq6f2wkhwt27og22n37m.us-east-1.es.amazonaws.com", 443, "https"));
 		restClient = builder.build();
 	}
 	
@@ -87,8 +87,8 @@ public class ElasticSearchHelper {
 	 * @throws JSONException
 	 * @throws JsonProcessingException
 	 */
-	public JSONObject generateQuery(int greenhouse, String searchText, JSONArray filterItems, String sort, String aggs) throws JSONException, JsonProcessingException {
-		return generateQuery(greenhouse, searchText, filterItems, sort, aggs, 0, 0);
+	public JSONObject generateQuery(int greenhouse, String searchText, String[] searchFields, JSONArray filterItems, String sort, String aggs) throws JSONException, JsonProcessingException {
+		return generateQuery(greenhouse, searchText, searchFields, filterItems, sort, aggs, 0, 0);
 	}
 	
 	/**
@@ -105,7 +105,7 @@ public class ElasticSearchHelper {
 	 * @throws JSONException
 	 * @throws JsonProcessingException
 	 */
-	public JSONObject generateQuery(int greenhouse, String searchText, JSONArray filterItems, String sort, String aggs, int from, int size) throws JSONException, JsonProcessingException {
+	public JSONObject generateQuery(int greenhouse, String searchText, String[] searchFields, JSONArray filterItems, String sort, String aggs, int from, int size) throws JSONException, JsonProcessingException {
 		searchText = StringUtils.trim(searchText);
 		sort = StringUtils.trim(sort);
 		aggs = StringUtils.trim(aggs);
@@ -213,9 +213,15 @@ public class ElasticSearchHelper {
 		} else {
 			q.put("query", new JSONObject("{\"bool\": {\"must\": []}}"));
 			JSONArray must = q.getJSONObject("query").getJSONObject("bool").getJSONArray("must");
-			
+
+        /*    "multi_match" : {
+              "query":    "fiberx", 
+              "fields": [ "name.analyzed", "short_bio.analyzed", "about.analyzed", "keyword_tags.analyzed"] 
+            }*/
 			if (StringUtils.isNotBlank(searchText)) {
-				must.put(new JSONObject("{\"query_string\":{\"query\":"+new ObjectMapper().writeValueAsString(searchText)+"}}"));
+				JSONObject mm = new JSONObject("{\"multi_match\":{\"query\":"+new ObjectMapper().writeValueAsString(searchText)+"}}");
+				mm.getJSONObject("multi_match").put("fields", new JSONArray(searchFields));
+				must.put(mm);
 			}
 			
 			
@@ -226,12 +232,22 @@ public class ElasticSearchHelper {
 					JSONArray values = item.getJSONArray("values");
 					
 					if (values.length()>0) {
-						JSONObject terms= new JSONObject();
-						terms.put(fieldName, values);
-						
-						JSONObject termsForArr = new JSONObject();
-						termsForArr.put("terms", terms);
-						must.put(termsForArr);
+						if (StringUtils.equals(fieldName, "location")) {
+							/*JSONObject mm = new JSONObject("{\"multi_match\":{\"query\":"+new ObjectMapper().writeValueAsString(values.getString(0))+"}}");
+							mm.getJSONObject("multi_match").put("fields", new JSONArray("[\"location.analyzed\"]"));
+							must.put(mm);*/		
+							String x = "{\"wildcard\": {\"location\": {\"value\": \"*"+(StringUtils.lowerCase(StringUtils.trim(values.getString(0))))+"*\", \"boost\": 1.0}}}";
+							System.out.print(x);
+							JSONObject mm = new JSONObject(x);
+							must.put(mm);				
+						} else {
+							JSONObject terms= new JSONObject();
+							terms.put(fieldName, values);
+							
+							JSONObject termsForArr = new JSONObject();
+							termsForArr.put("terms", terms);
+							must.put(termsForArr);
+						}
 					}
 				}
 			}
@@ -255,14 +271,14 @@ public class ElasticSearchHelper {
 	
 	public static void main(String[] args) throws Exception {
 		try {
-			JSONObject q = ElasticSearchHelper.getInstance().generateQuery(24, "aqua", null, null, null);
+			JSONObject q = ElasticSearchHelper.getInstance().generateQuery(24, "aqua", new String[]{}, null, null, null);
 			
 			JSONArray testterms = new JSONArray();
 			testterms.put(new JSONObject("{\"name\": \"status\", \"values\": [\"active\"]}"));
 			testterms.put(new JSONObject("{\"name\": \"greenhouses\", \"values\": [35,122]}"));
 			testterms.put(new JSONObject("{\"name\": \"part_of\", \"values\": [\"greenhouse\", \"both\"]}"));
 			
-			q = ElasticSearchHelper.getInstance().generateQuery(35, "aqua", testterms, "-id,-start_date", "status,greenhouses,part_of,topics", 0, 10);
+			q = ElasticSearchHelper.getInstance().generateQuery(35, "aqua",  new String[]{}, testterms, "-id,-start_date", "status,greenhouses,part_of,topics", 0, 10);
 			System.out.println(q.toString(4));
 			
 			String url = "/conferences_production/_search";

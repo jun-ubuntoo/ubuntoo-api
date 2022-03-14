@@ -18,7 +18,7 @@ public class KnowledgeResultsMapper implements SearchResultMapper {
 		SearchResultView view = new SearchResultView();
 		view.setId(id);
 		view.setScore(score);
-		view.setCategory("news");
+		view.setCategory("knowledge");
 		view.setImage("https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500");
 		view.setTitle(WordUtils.capitalize(json.getString("title")));
 		

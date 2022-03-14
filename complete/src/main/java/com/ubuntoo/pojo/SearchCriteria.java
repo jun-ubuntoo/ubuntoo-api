@@ -10,7 +10,7 @@ public class SearchCriteria {
 	private String aggregates;
 	private List<SearchCriteriaFilterValues> filters = new ArrayList<SearchCriteriaFilterValues>();
 	
-	private int pageSize;
+	private int pageSize = 10;
 	private int startAt;
 
 	public SearchCriteria() {
@@ -81,6 +81,13 @@ public class SearchCriteria {
 
 	public void setStartAt(int startAt) {
 		this.startAt = startAt;
+	}
+
+	@Override
+	public String toString() {
+		return "SearchCriteria [category=" + category + ", searchText=" + searchText + ", sort=" + sort
+				+ ", aggregates=" + aggregates + ", filters=" + filters + ", pageSize=" + pageSize + ", startAt="
+				+ startAt + "]";
 	}
 	
 	

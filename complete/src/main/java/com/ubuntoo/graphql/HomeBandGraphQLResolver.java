@@ -58,7 +58,7 @@ public class HomeBandGraphQLResolver implements GraphQLQueryResolver {
 			
 			SearchGraphQLResolver sgr = new SearchGraphQLResolver();
 			try {
-				cat.setItems(sgr.searchInternal(criteria, env));
+				cat.setItems(sgr.searchInternal(criteria, env).getItems());
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -71,7 +71,7 @@ public class HomeBandGraphQLResolver implements GraphQLQueryResolver {
 			
 			SearchGraphQLResolver sgr = new SearchGraphQLResolver();
 			try {
-				cat.setItems(sgr.searchInternal(criteria, env));
+				cat.setItems(sgr.searchInternal(criteria, env).getItems());
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -85,7 +85,7 @@ public class HomeBandGraphQLResolver implements GraphQLQueryResolver {
 			
 			SearchGraphQLResolver sgr = new SearchGraphQLResolver();
 			try {
-				cat.setItems(sgr.searchInternal(criteria, env));
+				cat.setItems(sgr.searchInternal(criteria, env).getItems());
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
