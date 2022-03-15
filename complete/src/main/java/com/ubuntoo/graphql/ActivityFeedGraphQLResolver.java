@@ -58,10 +58,17 @@ public class ActivityFeedGraphQLResolver implements GraphQLQueryResolver {
 	}
 
 	public List<ActivityFeedItem> allActivityFeedItems() {
-		List<ActivityFeed> feeds = activityFeedRepository.findWithCondition();
+		System.out.println("--------------------------");
+		List<ActivityFeed> feeds = activityFeedRepository.findActivitFeedNoGreenhouse();
 		for (ActivityFeed feed : feeds) {
 			System.out.println(feed.toString());
 		}
+		System.out.println("--------------------------");
+		feeds = activityFeedRepository.findActivitFeedForGreenhouse(130);
+		for (ActivityFeed feed : feeds) {
+			System.out.println(feed.toString());
+		}
+		System.out.println("--------------------------");
 		
 		return feedItems;
 	}
