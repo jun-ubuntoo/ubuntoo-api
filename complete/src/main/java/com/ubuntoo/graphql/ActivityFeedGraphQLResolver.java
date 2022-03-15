@@ -4,14 +4,20 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.ubuntoo.db.ActivityFeed;
+import com.ubuntoo.db.ActivityFeedRepository;
 import com.ubuntoo.pojo.ActivityFeedItem;
 
 import graphql.kickstart.tools.GraphQLQueryResolver;
 
 @Component
 public class ActivityFeedGraphQLResolver implements GraphQLQueryResolver {
+	@Autowired
+	ActivityFeedRepository activityFeedRepository;
+	
 	static {
 		System.out.println(" ***************** ActivityFeedGraphQLResolver");
 	}
@@ -52,6 +58,11 @@ public class ActivityFeedGraphQLResolver implements GraphQLQueryResolver {
 	}
 
 	public List<ActivityFeedItem> allActivityFeedItems() {
+		List<ActivityFeed> feeds = activityFeedRepository.findWithCondition();
+		for (ActivityFeed feed : feeds) {
+			System.out.println(feed.toString());
+		}
+		
 		return feedItems;
 	}
 }

@@ -14,8 +14,7 @@ import com.ubuntoo.mappers.SolutionsResultsMapper;
 import com.ubuntoo.pojo.SearchCategory;
 import com.ubuntoo.staticdata.SearchCategories;
 
-@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
-@SpringBootApplication(scanBasePackages={"com.ubuntoo.graphql", "com.ubuntoo.api", "com.example.restservice"}) //, "com.ubuntoo.graphql"
+@SpringBootApplication(scanBasePackages={"com.ubuntoo.db", "com.ubuntoo.graphql", "com.ubuntoo.api", "com.example.restservice"}) //, "com.ubuntoo.graphql"
 public class RestServiceApplication {
     static {
         System.out.println("************* RestServiceApplication");
