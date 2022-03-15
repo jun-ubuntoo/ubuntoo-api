@@ -26,8 +26,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-@SpringBootTest
+@SpringBootTest(classes=com.example.restservice.GreetingController.class)
+@EnableWebMvc
 @AutoConfigureMockMvc
 public class GreetingControllerTests {
 
@@ -38,7 +40,7 @@ public class GreetingControllerTests {
 	public void noParamGreetingShouldReturnDefaultMessage() throws Exception {
 
 		this.mockMvc.perform(get("/greeting")).andDo(print()).andExpect(status().isOk())
-				.andExpect(jsonPath("$.content").value("Hello -- World!"));
+				.andExpect(jsonPath("$.content").value("Hello to you World! hi hi"));
 	}
 
 	@Test
@@ -46,7 +48,7 @@ public class GreetingControllerTests {
 
 		this.mockMvc.perform(get("/greeting").param("name", "Spring Community"))
 				.andDo(print()).andExpect(status().isOk())
-				.andExpect(jsonPath("$.content").value("Hello to Spring Community!"));
+				.andExpect(jsonPath("$.content").value("Hello to you Spring Community! hi hi"));
 	}
 
 }
